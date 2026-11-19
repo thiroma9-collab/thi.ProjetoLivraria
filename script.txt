@@ -1,0 +1,21 @@
+create database dbLivraria;
+
+use dbLivraria;
+
+create table login(
+id int primary key auto_increment,
+nome varchar(100) not null,
+email varchar(100) not null unique,
+senha varchar(100) null,
+senhahash varchar(100) not null
+);
+
+describe login;
+
+create table livro(
+id int primary key auto_increment,
+nome varchar(100) not null,
+isbm varchar(20) not null unique,
+descricao text,
+valor decimal(10,2) not null
+);
