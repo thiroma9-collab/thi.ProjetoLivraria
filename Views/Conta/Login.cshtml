@@ -1,0 +1,87 @@
+﻿@model Thi.ProjetoLivraria.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-5 col-lg-4">
+
+            <div class="card shadow">
+
+                <div class="card-body p-4">
+
+                    <h2 class="text-center mb-3">
+                        Minha Livraria
+                    </h2>
+
+                    <p class="text-center text-muted mb-4">
+                        Entre com seus dados para continuar.
+                    </p>
+
+                    <form asp-controller="Conta"
+                          asp-action="Login"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="Email"
+                                   class="form-label">
+                                E-mail
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control"
+                                   placeholder="Digite seu e-mail" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="mb-3">
+
+                            <label asp-for="Senha"
+                                   class="form-label">
+                                Senha
+                            </label>
+
+                            <input asp-for="Senha"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Digite sua senha" />
+
+                            <span asp-validation-for="Senha"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <button type="submit"
+                                class="btn btn-primary w-100">
+                            Entrar
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
