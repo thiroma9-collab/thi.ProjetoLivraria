@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Thi.ProjetoLivraria.Models;
 
-namespace Thi.ProjetoLivraria.Controllers
+namespace ProjetoLogin.Controllers
 {
     public class ContaController : Controller
     {
@@ -24,7 +25,7 @@ namespace Thi.ProjetoLivraria.Controllers
             return View(new LoginViewModel());
         }
 
-        // Recebe os dados informados pelo usuario
+        // Processa os dados do login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(
@@ -35,13 +36,13 @@ namespace Thi.ProjetoLivraria.Controllers
                 return View(model);
             }
 
-            // Busca o usuario pelo email
+            // Procura o usuario pelo email
             string email = model.Email.Trim();
 
             var usuario = await _context.Logins
                 .FirstOrDefaultAsync(u => u.Email == email);
 
-            // Verifica se o usuario existe e possui hash
+            // Verifica se o usuario existe
             if (usuario == null ||
                 string.IsNullOrWhiteSpace(usuario.SenhaHash))
             {
@@ -53,13 +54,14 @@ namespace Thi.ProjetoLivraria.Controllers
                 return View(model);
             }
 
-            // Verifica a senha utilizando o hash armazenado
+            // Confere a senha com o hash armazenado
             var resultado = _hasher.VerifyHashedPassword(
                 usuario,
                 usuario.SenhaHash,
                 model.Senha
             );
 
+            // Se a senha estiver incorreta
             if (resultado == PasswordVerificationResult.Failed)
             {
                 ModelState.AddModelError(
@@ -68,6 +70,17 @@ namespace Thi.ProjetoLivraria.Controllers
                 );
 
                 return View(model);
+            }
+
+            // Atualiza o hash caso seja necessario
+            if (resultado == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                usuario.SenhaHash = _hasher.HashPassword(
+                    usuario,
+                    model.Senha
+                );
+
+                await _context.SaveChangesAsync();
             }
 
             // Cria a sessao do usuario
